@@ -2,7 +2,7 @@
 #Rodríguez Pérez Urik Paul 715536
 
 .text
-	addi $s0, $zero, 3 #save the value N
+	addi $s0, $zero, 8 #save the value N
 	add $t0, $zero, $s0 #iterator on N (i = N)
 	addi $s1, $s1, 0x10010000 #tower 1
 	addi $s2, $s2, 0x10010020 #tower 2
