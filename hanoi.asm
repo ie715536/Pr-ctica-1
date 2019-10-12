@@ -1,87 +1,87 @@
 #Bonifacio Benavides Yadira Vanessa 714415
-#Rodríguez Pérez Urik Paul 715536
+#RodrÃ­guez PÃ©rez Urik Paul 715536
 
 .text
-	addi $s0, $zero, 6 #Guarda el valor de N
-	add $t0, $zero, $s0 #iterador de N (i = N)
-	addi $s1, $s1, 0x10010000 #torre 1
-	addi $s2, $s2, 0x10010020 #torre 2
-	addi $s3, $s3, 0x10010040 #torre 3
+	addi $s0, $zero, 3 #save the value N
+	add $t0, $zero, $s0 #iterator on N (i = N)
+	addi $s1, $s1, 0x10010000 #tower 1
+	addi $s2, $s2, 0x10010020 #tower 2
+	addi $s3, $s3, 0x10010040 #tower 3
 	
 Do:
-	#LLENA LA PRIMERA TORRE
-	sw $t0, ($s1) #Ingresa el valor de i actual en la posición indicada
-	addi $s1, $s1, 4 #Desplaza el apuntador de la torre
-	addi $t0, $t0, -1 #Disminuye el valor de i
-	bne $t0, $zero, Do #Se repite si es que no se ha llenado la torre
+	#FILL THE FIRST TOWER
+	sw $t0, ($s1) #enter the value of i at the indicated position 
+	addi $s1, $s1, 4 #move the tower pointer
+	addi $t0, $t0, -1 #i = i - 1
+	bne $t0, $zero, Do #i != 0? Do : out
 	
-	jal hanoi #Manda a llamar la función recursiva hanoi
-	j exit #Termina el código 
+	jal hanoi #call hanoi function 
+	j exit #the code ends  
 	
 hanoi:
-	bne $s0, 1, else #Salta a loop si N es diferente de 1
+	bne $s0, 1, else #N != 1? else : out
 	
-	#IF N == 1
-	addi $s1, $s1, -4 #Posicionas tu apuntador de la torre apuntada por $s1
-	lw $t2, ($s1) #Guarda el valor de la posición en $t2
-	sw $zero, ($s1) #Guarda 0 en la posición actual
-	sw $t2, ($s3) #Guarda el valor que contenía la torre apuntada por $s1, en la apuntada por $s3
-	addi $s3, $s3, 4	 #Mueve a la siguiente posición tu apuntador de la torre apuntada por $s3
-	jr $ra	#Regresa a donde fue llamada la función
+	#if N == 1
+	addi $s1, $s1, -4 #decreasing the value of the tower s1 pointer
+	lw $t2, ($s1) #save the value on t2
+	sw $zero, ($s1) #save 0 
+	sw $t2, ($s3) #save the value of tower s1 on tower s3
+	addi $s3, $s3, 4 #move de tower s3 pointer 
+	jr $ra	#go back to where the function was called 
 	
 else:
-	#(N - 1) TORRE 1 TORRE 3 TORRE 2	
-	addi $sp, $sp, -8 #Reservas memoria para $ra y para el valor de N actual
-	sw $ra, 0($sp) #Guarda en la primer posición de la memoria reservada la dirección de retorno
-	sw $s0, 4($sp) #Guarda en la segunda posición de la memoria reservada el valor de N actual
+	#(N - 1) TOWER 1 TOWER 3 TOWER 2	
+	addi $sp, $sp, -8 #decreasing the stack pointer 
+	sw $ra, 0($sp) #storing the return address
+	sw $s0, 4($sp) #storing N
 	
-	addi $s0, $s0, -1 #Disminuyeen 1 el valor de N actual
+	addi $s0, $s0, -1 #N = N - 1
 	
-	#INTERCAMBIA LOS APUNTADORES ENTRE LA TORRE 2 CON LA 3
-	add $t1, $zero, $s2 #$t1 apunta a la torre 2
-	add $s2, $s3, $zero #El apuntador de la torre 2 ahora apunta a la torre 3
-	add $s3, $zero, $t1 #El apuntador de la torre 3 ahora apunta a la torre 2
+	#EXCHANGE THE POINTERS OF TOWER 2 AND 3
+	add $t1, $zero, $s2 #t1 point to tower 2
+	add $s2, $s3, $zero #the tower 2 pointer point to tower 3
+	add $s3, $zero, $t1 #now the tower 3 pointer point to tower 2
 	
-	jal  hanoi #Manda a llamar la función hanoi
+	jal  hanoi #call hanoi function 
 	
-	lw $ra, 0($sp) #Recuperas el valor de retorno guardado en la memoria
-	lw $s0, 4($sp) #Recuperas el valor de N guardado en memoria
-	addi $sp, $sp, 8 #Desplazas el apuntador de memoria
+	lw $ra, 0($sp) #loading values from stack 
+	lw $s0, 4($sp) #loading values from stack 
+	addi $sp, $sp, 8 #increasing stack pointer
 	
-	#VUELVE A INTERCAMBIAR LOS APUNTADORES ENTRE LA TORRE 2 CON LA TORRE 3
-	add $t1, $zero, $s3 #$t1 apunta a la torre 3
-	add $s3, $s2, $zero #El apuntador de la torre 3 ahora apunta a la torre 2
-	add $s2, $zero, $t1 #El apuntador de la torre 2 ahora apunta a la torre 3
+	#EXCHANGE ONE MORE TIME THE POINTERS OF TOWER 2 AND 3
+	add $t1, $zero, $s3 #t1 point to tower 3
+	add $s3, $s2, $zero #the tower 3 pointer point to tower 2
+	add $s2, $zero, $t1 #now the tower 2 pointer point to tower 3
 	
-	addi $s1, $s1, -4 #Posicionas tu apuntador de la torre apuntada por $s1
-	lw $t2, ($s1) #Guarda el valor de la posición en $t2
-	sw $zero, ($s1) #Guarda 0 en la posición actual
-	sw $t2, ($s3) #Guarda el valor que contenía la torre apuntada por $s1, en la apuntada por $s3
-	addi $s3, $s3, 4	 #Mueve a la siguiente posición tu apuntador de la torre apuntada 
+	addi $s1, $s1, -4 #decreasing the value of the tower s1 pointer
+	lw $t2, ($s1) #save the value on t2
+	sw $zero, ($s1) #save 0
+	sw $t2, ($s3) #save the value of tower s1 on tower s3
+	addi $s3, $s3, 4 #move de tower s3 pointer 
 	
-	#(n - 1) TORRE 2 TORRE 1 TORRE 3
-	addi $sp, $sp, -8 #Reservas memoria para $ra y para el valor de N actual
-	sw $ra, 0($sp) #Guarda en la primer posición de la memoria reservada la dirección de retorno
-	sw $s0, 4($sp) #Guarda en la segunda posición de la memoria reservada el valor de N actual
+	#(N - 1) TOWER 2 TOWER 1 TOWER 3
+	addi $sp, $sp, -8 #decreasing the stack pointer 
+	sw $ra, 0($sp) #storing the return address
+	sw $s0, 4($sp) #storing N
 	
-	addi $s0, $s0, -1 #Disminuye en 1 el valor de N actual
+	addi $s0, $s0, -1 #N = N - 1
 	
-	#INTERCAMBIA LOS APUNTADORES ENTRE LA TORRE 1 CON LA 2
-	add $t1, $zero, $s1 #$t1 apunta a la torre 1
-	add $s1, $s2, $zero #El apuntador de la torre 1 ahora apunta a la torre 2
-	add $s2, $zero, $t1 #El apuntador de la torre 2 ahora apunta a la torre 1
+	#EXCHANGE THE POINTERS OF TOWER 1 AND 2
+	add $t1, $zero, $s1 #t1 point to tower 1
+	add $s1, $s2, $zero #the tower 1 pointer point to tower 2
+	add $s2, $zero, $t1 #now the tower 2 pointer point to tower 1
 	
-	jal  hanoi #manda a llamar la función hanoi
+	jal  hanoi #call hanoi function 
 	
-	lw $ra, 0($sp) #Recuperas el valor de retorno guardado en la memoria
-	lw $s0, 4($sp) #Recuperas el valor de N guardado en memoria
-	addi $sp, $sp, 8 #Desplazas el apuntador de memoria
+	lw $ra, 0($sp) #loading values from stack 
+	lw $s0, 4($sp) #loading values from stack 
+	addi $sp, $sp, 8 #increasing stack pointer
 
-	#VUELVE A INTERCAMBIAR LOS APUNTADORES ENTRE LA TORRE 1 CON LA TORRE 2
-	add $t1, $zero, $s2 #$t1 apunta a la torre 2
-	add $s2, $s1, $zero #El apuntador de la torre 2 ahora apunta a la torre 1
-	add $s1, $zero, $t1 #El apuntador de la torre 1 ahora apunta a la torre 2
+	#EXCHANGE ONE MORE TIME THE POINTERS OF TOWER 1 AND 2
+	add $t1, $zero, $s2 #t1 point to tower 2
+	add $s2, $s1, $zero #the tower 2 pointer point to tower 1
+	add $s1, $zero, $t1 #now the tower 1 pointer point to tower 2
 	
-	jr $ra #Regresa a la dirección guardada por $ra
+	jr $ra #return to address ra
 	
 exit:
